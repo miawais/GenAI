@@ -3,4 +3,4 @@ ipykernel
 beautifulsoup4
 pymupdf 
 langchain-community 
-
+arxiv
