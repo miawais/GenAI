@@ -4,5 +4,6 @@ beautifulsoup4
 pymupdf 
 langchain-community 
 arxiv
-langchain-text-splitt
+langchain-text-split
 lxml
+ollama
