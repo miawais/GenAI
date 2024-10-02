@@ -7,3 +7,5 @@ arxiv
 langchain-text-split
 lxml
 ollama
+sentence_transformers
+langchain_huggingface
