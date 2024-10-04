@@ -11,3 +11,6 @@ sentence_transformers
 langchain_huggingface
 faiss-cpu 
 chromadb
+streamlit
+langchain_groq
+langchain_core
