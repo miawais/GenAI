@@ -21,7 +21,7 @@ model=ChatGroq(model="Gemma2-9b-It",groq_api_key=groq_api_key)
 #1.Create Prompt Template 
 system_template="Translate the following into {language}:"
 prompt_template=ChatPromptTemplate.from_messages(
-    [("system",generic_template),
+    [("system",system_template),
     ("user","{text}")
     ]
 )
@@ -51,4 +51,4 @@ add_routes(
 
 if __name__=="__main__":
     import uvicorn
-    uvicorn.run(app,host="localhost",port=8000)
+    uvicorn.run(app,host="127.0.0.1",port=8000)
