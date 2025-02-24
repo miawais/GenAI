@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoicelytics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">Invoicelytics</h1>
+        </header>
+        <main>
+            <form id="invoiceForm" enctype="multipart/form-data">
+                <label for="inputPrompt">Input Prompt:</label>
+                <input type="text" id="inputPrompt" name="inputPrompt" placeholder="Enter your prompt here...">
+
+                <label for="imageUpload">Choose an image:</label>
+                <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
+
+                <button type="submit">Explain The Invoice</button>
+            </form>
+
+            <div id="uploadedImage"></div>
+
+            <div id="responseSection">
+                <h2>Response</h2>
+                <p id="responseText">{{ response }}</p>
+            </div>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

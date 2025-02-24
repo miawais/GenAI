@@ -1,27 +1,25 @@
 from dotenv import load_dotenv
-import streamlit as st
 import os
 from PIL import Image
 import google.generativeai as genai
+from flask import Flask, request, render_template, jsonify
 
 load_dotenv()
-
-# Configuring API Key for Gemini
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-pro')
 
-# Load Gemini 1.5 Pro model (Switching from deprecated gemini-pro-vision)
-model = genai.GenerativeModel('gemini-1.5-pro')  # Change model name here
 
 def get_gemini_response(input_text, image, prompt):
     response = model.generate_content([input_text, image[0], prompt])
     return response.text
 
+
 def input_image_details(uploaded_file):
     if uploaded_file is not None:
-        bytes_data = uploaded_file.getvalue()
+        bytes_data = uploaded_file.read()
         image_parts = [
             {
-                "mime_type": uploaded_file.type,
+                "mime_type": uploaded_file.content_type,
                 "data": bytes_data
             }
         ]
@@ -30,27 +28,26 @@ def input_image_details(uploaded_file):
         raise FileNotFoundError("File not found")
 
 
-# Streamlit APP
-st.set_page_config(page_title="Invoicelytics", page_icon=":moneybag:")
-st.header("Invoicelytics")
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
-input_text = st.text_input("Input Prompt", key="input")
-uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
-image = None
+@app.route('/')
+def home():
+    return render_template('index.html', response='')
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
 
-submit = st.button("Explain The Invoice")
+@app.route('/explain_invoice', methods=['POST'])
+def explain_invoice():
+    input_prompt = request.form['inputPrompt']
+    uploaded_file = request.files['imageUpload']
 
-input_prompt = """
-You are an expert in understanding invoices. We will upload an invoice image, and you will have to answer any questions based on the uploaded invoice image.
-"""
+    if uploaded_file is not None:
+        image_data = input_image_details(uploaded_file)
+        response = get_gemini_response(input_prompt, image_data, "")
+        return jsonify({"response": response})
+    else:
+        return jsonify({"error": "No image provided"}), 400
 
-if submit and uploaded_file is not None:
-    image_data = input_image_details(uploaded_file)
-    response = get_gemini_response(input_prompt, image_data, input_text)
-    st.subheader("Response")
-    st.write(response)
+
+if __name__ == '__main__':
+    app.run(debug=True)
