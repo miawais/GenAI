@@ -63,7 +63,8 @@ def get_chat_chain():
 # Function to process user input
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    new_db = FAISS.load_local("faiss_index", embeddings)
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+
 
     # Perform the similarity search
     docs = new_db.similarity_search(user_question)
