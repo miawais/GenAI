@@ -1,0 +1,71 @@
+import streamlit as st
+from PyPDF2 import PdfReader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.prompts import PromptTemplate
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+import google.generativeai as genai
+from langchain.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+#function to extract Text form PDF
+def get_pdf_text(pdf_docs):
+    text=""
+    for pdf in pdf_docs:
+        pdf_reader = PdfReader(pdf)
+        for page in pdf_reader.pages:
+            text+=page.extract_text()
+
+            return text
+
+
+
+#function to divide Text into Chunks
+def get_text_chunks(text):
+    text_splitter=RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    chunks=text_splitter.split_text(text)
+    return chunks
+
+#function to store text chunks in vector store
+def get_vector_store(chunks):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    vector_store=FAISS.from_texts(texts=chunks,embedding=embeddings)
+    vector_store.save_local("faiss_index")
+    return vector_store
+
+
+#function to define Conversational Chain
+def get_chat_chain(vector_store):
+    prompt_template = """
+    You are an AI assistant designed to provide accurate and relevant answers based on multiple documents. 
+    Use the provided document context to generate helpful responses. If the answer is not found in the documents, 
+    let the user know and avoid making up information.
+
+    Context:
+    {context}
+
+    User Question:
+    {question}
+
+    Response:
+    """
+    # Initialize the model
+    model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.3)
+    prompt=PromptTemplate(template=prompt_template,input_variables=["context","question"])
+    chain=load_qa_chain(model,chain_type="stuff",prompt=prompt)
+    return chain
+
+
+
+
+
+
+
+
