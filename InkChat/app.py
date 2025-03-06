@@ -64,6 +64,27 @@ def get_chat_chain(vector_store):
 
 
 
+#funtion to get user input
+def user_input(user_question):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    new_db=FAISS.load_local("faiss_index",embeddings)
+    docs=new_db.similarity_search(user_question)
+
+    chain= get_chat_chain(new_db)
+    response = chain({"question": user_question, "context": docs}, return_only_outputs=True)
+    print(docs)
+
+    st.write("Reply : ",response["Answer"])
+
+
+
+
+
+
+
+
+
+
 
 
 
