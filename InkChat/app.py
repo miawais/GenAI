@@ -79,9 +79,32 @@ def user_input(user_question):
 
 
 
+#main Function
+
+def main():
+    st.set_page_config(page_title="InkChat",page_icon=":books:")
+    st.title("InkChat")
+
+    user_question=st.text_input("Ask a question about your document:")
+    if st.button("Ask"):
+        user_input(user_question)
+
+
+    with st.sidebar:
+        st.title("Menu")
+        pdf_docs=st.file_uploader("Upload Your PDF",type=["pdf"])
+        if st.button("Submit & Process"):
+            raw_text=get_pdf_text(pdf_docs)
+            text_chunks=get_text_chunks(raw_text)
+            vector_store=get_vector_store(text_chunks)
+            st.success("Your Document has been processed successfully")
+            st.balloons()
 
 
 
+
+if __name__=="__main__":
+    main()
 
 
 
