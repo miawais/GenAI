@@ -65,12 +65,21 @@ def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     new_db = FAISS.load_local("faiss_index", embeddings)
 
+    # Perform the similarity search
     docs = new_db.similarity_search(user_question)
+
+    # Get the QA chain
     chain = get_chat_chain()
 
-    response = chain({"question": user_question, "context": docs}, return_only_outputs=True)
+    # Pass the documents in the required format
+    response = chain({
+        "question": user_question,
+        "input_documents": docs  # Use 'input_documents' instead of 'context'
+    }, return_only_outputs=True)
 
-    st.write("Reply:", response.get("answer", "Sorry, I couldn't find an answer."))  # ✅ Fix KeyError
+    # Display the answer
+    st.write("Reply:", response.get("answer", "Sorry, I couldn't find an answer."))
+
 
 
 # Main Streamlit Application
