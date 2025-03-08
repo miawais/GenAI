@@ -5,7 +5,7 @@ from langchain.prompts import PromptTemplate
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import google.generativeai as genai
-from langchain_community.vectorstores import FAISS  # ✅ Fixed Import
+from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from dotenv import load_dotenv
 import os
@@ -13,16 +13,14 @@ import os
 load_dotenv()
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-
 # Function to extract text from PDF
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:
-        pdf_reader = PdfReader(pdf)  # ✅ Ensure the PDF is read correctly
+        pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
-            text += page.extract_text() or ""  # ✅ Handle NoneType cases
-    return text  # ✅ Fixed indentation (was inside loop)
-
+            text += page.extract_text() or ""
+    return text
 
 # Function to split text into chunks
 def get_text_chunks(text):
@@ -30,14 +28,12 @@ def get_text_chunks(text):
     chunks = text_splitter.split_text(text)
     return chunks
 
-
 # Function to store text chunks in FAISS vector store
 def get_vector_store(chunks):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     vector_store = FAISS.from_texts(texts=chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
     return vector_store
-
 
 # Function to define Conversational Chain
 def get_chat_chain():
@@ -59,12 +55,10 @@ def get_chat_chain():
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
     return chain
 
-
 # Function to process user input
 def user_input(user_question):
     embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-
 
     # Perform the similarity search
     docs = new_db.similarity_search(user_question)
@@ -73,15 +67,13 @@ def user_input(user_question):
     chain = get_chat_chain()
 
     # Pass the documents in the required format
-    response = chain({
-        "question": user_question,
-        "input_documents": docs  # Use 'input_documents' instead of 'context'
-    }, return_only_outputs=True)
+    response = chain.invoke({
+        "input_documents": docs,
+        "question": user_question
+    })
 
     # Display the answer
-    st.write("Reply:", response.get("answer", "Sorry, I couldn't find an answer."))
-
-
+    st.write("Reply:", response.get("output_text", "Sorry, I couldn't find an answer."))
 
 # Main Streamlit Application
 def main():
@@ -97,8 +89,7 @@ def main():
 
     with st.sidebar:
         st.title("Menu")
-        pdf_docs = st.file_uploader("Upload Your PDFs", type=["pdf"],
-                                    accept_multiple_files=True)  # ✅ Support multiple PDFs
+        pdf_docs = st.file_uploader("Upload Your PDFs", type=["pdf"], accept_multiple_files=True)
 
         if st.button("Submit & Process"):
             if pdf_docs:
@@ -109,7 +100,6 @@ def main():
                 st.balloons()
             else:
                 st.warning("Please upload at least one PDF.")
-
 
 if __name__ == "__main__":
     main()
