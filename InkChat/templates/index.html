@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InkChat - AI Chat with Your Documents</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="chat-container">
+        <h1>What can I help with?</h1>
+
+        <!-- File Upload Section -->
+        <div class="upload-container">
+            <input type="file" id="pdf-upload">
+            <button onclick="uploadPDF()">Upload</button>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-box" id="chat-box"></div>
+
+        <!-- Input Box -->
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Ask anything...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='chat.js') }}"></script>
+</body>
+</html>
