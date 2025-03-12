@@ -1,0 +1,31 @@
+Field ID,Field Name,Field Type,Remote Field,Product ID,Product Name,Category,Sales,Expenses,Profit,Order Date,City,Product Fields ID,Mapped Product ID,Mapped Field ID,Value
+1,Material,Number,Yes,1,Laptop,Furniture,6819,3370,3449,30/08/2024,Houston,1,29,3,Standard
+2,Weight,Text,No,2,Smartphone,Clothing,8560,7817,743,20/09/2024,Houston,2,12,9,New Arrival
+3,Color,Date,Yes,3,Tablet,Electronics,1734,1421,313,13/05/2024,Houston,3,20,6,New Arrival
+4,Size,Date,No,4,Headphones,Furniture,2874,3867,-993,26/11/2024,Miami,4,4,4,Low
+5,Brand,Date,Yes,5,Gaming Console,Sports,9353,6059,3294,05/06/2024,Houston,5,15,9,Bestseller
+6,Warranty,Boolean,No,6,Refrigerator,Furniture,5179,7858,-2679,15/11/2024,Los Angeles,6,19,3,Bestseller
+7,Power,Boolean,Yes,7,Microwave,Food,9565,514,9051,26/08/2024,Los Angeles,7,20,7,Budget
+8,Battery Life,Boolean,No,8,Washing Machine,Electronics,6085,6340,-255,16/11/2024,Houston,8,22,9,Premium
+9,Waterproof,Date,Yes,9,Air Conditioner,Food,1310,4661,-3351,14/01/2025,Miami,9,8,4,Exclusive
+10,Storage,Number,No,10,Smartwatch,Food,4343,4901,-558,22/02/2025,Chicago,10,20,8,Discounted
+12,Screen Size,Number,No,101,Product 1,Category 1,5000,4000,1000,31/07/2024,City 1,201,101,12,Value 1
+13,Processor,Text,No,102,Product 2,Category 2,5250,4200,1050,31/08/2024,City 2,202,102,13,Value 2
+14,RAM,Number,No,103,Product 3,Category 3,5500,4400,1100,30/09/2024,City 3,203,103,14,Value 3
+15,Storage Type,Text,No,104,Product 4,Category 4,5750,4600,1150,31/10/2024,City 4,204,104,15,Value 4
+16,Graphics Card,Text,No,105,Product 5,Category 5,6000,4800,1200,30/11/2024,City 5,205,105,16,Value 5
+17,Battery Capacity,Number,No,106,Product 6,Category 6,6250,5000,1250,31/12/2024,City 6,206,106,17,Value 6
+18,Operating System,Text,No,107,Product 7,Category 7,6500,5200,1300,31/01/2025,City 7,207,107,18,Value 7
+19,Refresh Rate,Number,No,108,Product 8,Category 8,6750,5400,1350,28/02/2025,City 8,208,108,19,Value 8
+20,Camera Quality,Text,No,109,Product 9,Category 9,7000,5600,1400,31/03/2025,City 9,209,109,20,Value 9
+21,Connectivity,Text,No,110,Product 10,Category 10,7250,5800,1450,30/04/2025,City 10,210,110,21,Value 10
+22,Speakers,Text,No,111,Product 11,Category 11,7500,6000,1500,31/05/2025,City 11,211,111,22,Value 11
+23,Touchscreen,Boolean,No,112,Product 12,Category 12,7750,6200,1550,30/06/2025,City 12,212,112,23,Value 12
+24,Build Material,Text,No,113,Product 13,Category 13,8000,6400,1600,31/07/2025,City 13,213,113,24,Value 13
+25,Weight,Number,No,114,Product 14,Category 14,8250,6600,1650,31/08/2025,City 14,214,114,25,Value 14
+26,Warranty Period,Number,No,115,Product 15,Category 15,8500,6800,1700,30/09/2025,City 15,215,115,26,Value 15
+27,Energy Efficiency,Text,No,116,Product 16,Category 16,8750,7000,1750,31/10/2025,City 16,216,116,27,Value 16
+28,Water Resistance,Boolean,No,117,Product 17,Category 17,9000,7200,1800,30/11/2025,City 17,217,117,28,Value 17
+29,Foldable,Boolean,No,118,Product 18,Category 18,9250,7400,1850,31/12/2025,City 18,218,118,29,Value 18
+30,AI Features,Text,No,119,Product 19,Category 19,9500,7600,1900,31/01/2026,City 19,219,119,30,Value 19
+31,Voice Assistant,Boolean,No,120,Product 20,Category 20,9750,7800,1950,28/02/2026,City 20,220,120,31,Value 20

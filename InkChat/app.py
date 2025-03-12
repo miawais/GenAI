@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
@@ -11,6 +11,9 @@ app = Flask(__name__)
 
 # Configure Google AI API Key
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+
+# Store chat history
+chat_history = []
 
 # Function to extract text from PDF
 def get_pdf_text(pdf_file):
@@ -31,59 +34,51 @@ def get_vector_store(chunks):
 
 # Function to define AI Conversational Chain
 def get_chat_chain():
-    prompt_template = """You are an AI assistant. Use the provided document context to generate relevant answers.
-
-    Context:
-    {context}
-
-    User Question:
-    {question}
-
-    Response:
-    """
     model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", temperature=0.3)
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt_template)
+    chain = load_qa_chain(model, chain_type="stuff")  # ✅ "stuff" requires 'input_documents'
     return chain
 
 # Route for Home Page
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    return render_template("index.html")
+    global chat_history
 
-# Route to Upload and Process PDF
-@app.route("/upload", methods=["POST"])
-def upload_file():
-    if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
+    if request.method == "POST":
+        # Handle file upload
+        if "file" in request.files and request.files["file"].filename:
+            pdf_file = request.files["file"]
+            text = get_pdf_text(pdf_file)
+            chunks = get_text_chunks(text)
+            get_vector_store(chunks)
+            return render_template("index.html", message="File uploaded and processed successfully!", chat_history=chat_history)
 
-    pdf_file = request.files["file"]
-    text = get_pdf_text(pdf_file)
-    chunks = get_text_chunks(text)
-    get_vector_store(chunks)
+        # Handle chat input
+        elif "message" in request.form:
+            user_question = request.form["message"]
 
-    return jsonify({"message": "File uploaded and processed successfully"}), 200
+            try:
+                # Load the FAISS vector store
+                embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+                new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 
-# Route to Handle AI Chat
-@app.route("/chat", methods=["POST"])
-def chat():
-    data = request.json
-    user_question = data.get("message")
+                # Perform similarity search
+                docs = new_db.similarity_search(user_question)
 
-    if not user_question:
-        return jsonify({"error": "Empty question"}), 400
+                # Load AI chain
+                chain = get_chat_chain()
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+                # ✅ Use 'input_documents' instead of 'context'
+                response = chain.invoke({"input_documents": docs, "question": user_question})
 
-    docs = new_db.similarity_search(user_question)
-    chain = get_chat_chain()
+                # Store chat history
+                chat_history.append(("You", user_question))
+                chat_history.append(("AI", response["output_text"]))
 
-    response = chain.invoke({
-        "input_documents": docs,
-        "question": user_question
-    })
+            except Exception as e:
+                chat_history.append(("AI", f"Error: {str(e)}"))
 
-    return jsonify({"response": response.get("output_text", "No answer found.")})
+    # ✅ Ensure a valid return statement for GET requests
+    return render_template("index.html", chat_history=chat_history)
 
 if __name__ == "__main__":
     app.run(debug=True)
