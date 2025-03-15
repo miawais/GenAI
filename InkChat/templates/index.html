@@ -3,88 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InkChat - AI Chat with Your Documents</title>
+    <title>ChatWithPDF</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            width: 80%;
+            max-width: 1000px;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
+        }
+        .header {
+            display: flex;
             align-items: center;
-            padding-top: 50px;
+            font-size: 32px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
         }
-        .chat-container {
-            width: 50%;
+        .header i {
+            margin-right: 12px;
+            color: #007bff;
+            font-size: 36px;
+        }
+        .content {
+            display: flex;
+            justify-content: space-between;
+        }
+        .upload-box, .chat-box {
+            width: 48%;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
             text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        h1 {
-            font-size: 24px;
+        .upload-box:hover, .chat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .upload-box {
+            border: 2px dashed #e0e0e0;
+            position: relative;
+        }
+        .upload-box h3 {
+            font-size: 22px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 18px;
+        }
+        .upload-box p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .upload-box input {
+            display: none;
+        }
+        .upload-box label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .upload-box label:hover {
+            background: #0056b3;
+            transform: scale(1.05);
+        }
+        .chat-box textarea {
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            font-size: 15px;
             margin-bottom: 15px;
         }
-        .upload-container, .chat-container form {
-            margin-bottom: 20px;
-        }
-        .chat-box {
+        .chat-box button {
             width: 100%;
-            height: 300px;
+            padding: 14px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .chat-container {
+            height: 200px;
             overflow-y: auto;
-            border: 1px solid #333;
+            border: 1px solid #ddd;
             padding: 10px;
-            border-radius: 5px;
-            background-color: #1e1e1e;
-            text-align: left;
+            margin-bottom: 15px;
         }
         .user-message {
-            color: cyan;
+            text-align: right;
+            color: blue;
         }
-        .ai-message {
-            color: yellow;
-        }
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background: #2a2a2a;
-            color: white;
-        }
-        button {
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background: white;
-            cursor: pointer;
+        .bot-message {
+            text-align: left;
+            color: green;
         }
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <h1>InkChat - AI Chat with Your PDF</h1>
-
-        <!-- File Upload Form -->
-        <form method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button type="submit">Upload PDF</button>
-        </form>
-        {% if message %}
-            <p style="color: lightgreen;">{{ message }}</p>
-        {% endif %}
-
-        <!-- Chat Box -->
-        <div class="chat-box">
-            {% for sender, message in chat_history %}
-                <p class="{{ 'user-message' if sender == 'You' else 'ai-message' }}">
-                    <strong>{{ sender }}:</strong> {{ message }}
-                </p>
-            {% endfor %}
+    <div class="container">
+        <div class="header">
+            <i class="fas fa-file-pdf"></i> ChatWithPDF
         </div>
+        <div class="content">
+            <!-- PDF Upload Section -->
+            <div class="upload-box">
+                <h3>PDF Document</h3>
+                <p>Upload a PDF to start chatting</p>
+                <input type="file" id="file-upload">
+                <label for="file-upload"> ⭳ Upload PDF </label>
+                <p id="upload-status"></p>
+            </div>
 
-        <!-- Chat Form -->
-        <form method="POST">
-            <input type="text" name="message" placeholder="Ask something..." required>
-            <button type="submit">Send</button>
-        </form>
+            <!-- Chat Section -->
+            <div class="chat-box">
+                <h3>Chat with your PDF</h3>
+                <div class="chat-container" id="chat-container"></div>
+                <textarea id="chat-input" placeholder="Ask a question..."></textarea>
+                <button id="send-btn"><i class="fas fa-paper-plane"></i> SEND</button>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // Handle file upload
+        document.getElementById("file-upload").addEventListener("change", function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("upload-status").innerText = data.message || "Upload failed!";
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        // Handle chat input
+        document.getElementById("send-btn").addEventListener("click", function () {
+            const chatInput = document.getElementById("chat-input").value;
+            if (!chatInput.trim()) return;
+
+            fetch("/chat", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ message: chatInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const chatContainer = document.getElementById("chat-container");
+
+                // Display user message
+                const userMsg = document.createElement("div");
+                userMsg.classList.add("user-message");
+                userMsg.innerText = "You: " + chatInput;
+                chatContainer.appendChild(userMsg);
+
+                // Display bot response
+                if (data.response) {
+                    const botMsg = document.createElement("div");
+                    botMsg.classList.add("bot-message");
+                    botMsg.innerText = "AI: " + data.response;
+                    chatContainer.appendChild(botMsg);
+                }
+
+                document.getElementById("chat-input").value = "";
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
 </body>
 </html>
