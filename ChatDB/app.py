@@ -13,7 +13,7 @@ genai.configure(api_key=os.environ.get('GOOGLE_API_KEY'))
 
 #Function to load Gemini Model
 def get_gemini_response(question,prompt):
-    model=genai.GenerativeModel('gemini-pro')
+    model=genai.GenerativeModel('gemini-1.5-pro')
     response=model.generate_content([question,prompt[0]])
     return response.text
 
@@ -52,3 +52,13 @@ question=st.text_input("input: ",key="input")
 
 submit=st.button("Ask the Question")
 
+#if sumbit button clicked
+if submit:
+    response=get_gemini_response(question,prompt)
+    print(response)
+    data=read_sql_query(response,"chatdatabase.db")
+    st.subheader("The Reponse is ")
+
+    for row in data:
+        print(row)
+        st.header(row)
