@@ -66,7 +66,21 @@ input_prompt_01="""
 You are an experience technical Human Resource manager,Your task is to review the provided resume against the job description.
 Please share your professional evaluation on whether the candidate's profile aligns with Highlight the strengths and weakness in relation to the spcified job role.
 """
-input_prompt_02=
+input_prompt_02="""
+You are an technical Human Resource manager with expertise in Data Science, your role is to scrutinize the resume in light of the job 
+description provided.Share your insights on the candidate's suitability for the role from and HR perspective, Additionally , offer advice on enhancing the candidate's skills and indentify areas.
+"""
+
+input_prompt_03="""
+Compare the provided resume against industry-specific job descriptions and identify missing or underrepresented keywords critical
+for Applicant Tracking System (ATS) optimization. Highlight essential technical skills, 
+soft skills, and role-specific terminology that would improve the resume’s alignment with hiring criteria.
+"""
+
+input_prompt_04="""
+Analyze this resume against the given job description and calculate a percentage match based on skills,
+experience, education, and relevant keywords. Provide a breakdown of matching and missing elements.
+"""
 
 
 
