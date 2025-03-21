@@ -49,4 +49,28 @@ st.header("Resume Analyzer")
 input_text=st.text_area("Job Description ",key="input")
 uploaded_file=st.file_uploader("Upload Your PDF",type=["pdf"])
 
+if uploaded_file is not None:
+    st.write("PDF Resume Uploaded Sucessfully")
+else:
+    st.write("File Not Uploaded")
+
+#Resume Analysis Options or Features
+submit_button_01=st.button("Tell me About the Resume")
+submit_button_02=st.button("How Ca i Improvise my Skills")
+submit_button_03=st.button("What are the keywords that are Missing")
+submit_button_04=st.button("Percentage Match of the Resume")
+
+
+#Input Prompt Templates for all features
+input_prompt_01="""
+You are an experience technical Human Resource manager,Your task is to review the provided resume against the job description.
+Please share your professional evaluation on whether the candidate's profile aligns with Highlight the strengths and weakness in relation to the spcified job role.
+"""
+input_prompt_02=
+
+
+
+
+
+
 
